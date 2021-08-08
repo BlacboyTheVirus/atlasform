@@ -42,6 +42,19 @@
         text-align: right;
       }
 
+      th, td{
+        vertical-align: top
+      }
+
+      #preview p{
+        font-weight: bold
+      }
+
+      #preview .card-header{
+        margin-bottom: 20px;
+        margin-top: 50px
+      }
+
       .total{
         font-size: 24px;
         text-align: right;
@@ -53,10 +66,12 @@
 
       .card{
         cursor: pointer;
+        margin-top: 0px
       }
 
       .bg-card-selected {
         background-color: #d7e9ff !important;
+        margin-top: -10px
       }
 
       .form-label {
@@ -102,6 +117,18 @@
         height: 25px !important;
       }
 
+  
+      .card {
+        -webkit-transform: translateY(0);
+        -moz-transform: translateY(0);
+        -ms-transform: translateY(0);
+        -o-transform: translateY(0);
+        transform: translateY(0);
+        -webkit-transition: .5s;
+        -o-transition: .5s;
+        -moz-transition: .5s;
+        transition: .5s;
+      }
 
       .has-error{
         border-color:#cc0000;
@@ -123,7 +150,7 @@
 
 
     <div class="py-2 text-center">
-      <img class="d-block mx-auto mb-4" src="images/atlas.png" alt="" height="150">
+      <img class="d-block mx-auto mb-4" src="images/atlas_banner_bb.png" alt="" width="100%">
     </div>
     
     <div class="container">
@@ -138,7 +165,7 @@
 
           <li class="nav-item" role="presentation">
             <button class="nav-link disabled" id="specials-tab" data-bs-toggle="tab" data-bs-target="#specials" type="button" role="tab" aria-controls="specials" aria-selected="false">
-              <h4 class="mb-3">Specials Information</h4>
+              <h4 class="mb-3">Special Information</h4>
             </button>
           </li>
 
@@ -189,10 +216,9 @@
 
                 <div class="col-12">
                   <label for="companyName" class="form-label">1. Company Name</label>
-                  <div class="form-control" >{{ $LoggedVendorInfo['name'] }}</div>
-                  <input hidden  value="{{ $LoggedVendorInfo['name'] }}" >
+                  <input class="form-control" name="companyName" id="companyName" value="{{ $LoggedVendorInfo['name'] }}" required>
 
-                  <div class="invalid-feedback"></div>
+                  <span id="error_companyName" class="text-danger error-label"></span>
                 </div>
     
                 <div class="col-sm-4">
@@ -234,31 +260,31 @@
             
                 <div class="col-sm-3">
                   <label for="primaryContact" class="form-label">7. Primary Contact</label>
-                  <input type="text" class="form-control" id="primaryContact" name="primaryContact" placeholder="" value="{{ old('primaryContact') }}" required>
+                  <input type="text" class="form-control" id="primaryContact" name="primaryContact" placeholder="Contact Person" value="{{ old('primaryContact') }}" required>
                   <span id="error_primaryContact" class="text-danger error-label"></span>
                 </div>
 
                 <div class="col-sm-3">
                   <label for="primaryEmail" class="form-label">8. Primary Email</label>
-                  <input type="text" class="form-control" id="primaryEmail" name="primaryEmail" placeholder="" value="{{ old('primaryEmail', $LoggedVendorInfo['email'])  }}" required >
+                  <input type="text" class="form-control" id="primaryEmail" name="primaryEmail" placeholder="Email Address" value="{{ old('primaryEmail', $LoggedVendorInfo['email'])  }}" required >
                   <span id="error_primaryEmail" class="text-danger error-label"></span>
                 </div>                
 
                 <div class="col-sm-2">
-                  <label for="primaryTelephone" class="form-label">Telephone</label>
-                  <input type="text" class="form-control" id="primaryTelephone" name="primaryTelephone" placeholder="" value="{{ old('primaryTelephone') }}" data-mask="(999) 999-9999" required>
+                  <label for="primaryTelephone" class="form-label">9. Telephone #</label>
+                  <input type="text" class="form-control" id="primaryTelephone" name="primaryTelephone" placeholder="Telephone Number" value="{{ old('primaryTelephone') }}" data-mask="(999) 999-9999" required>
                   <span id="error_primaryTelephone" class="text-danger error-label"></span>
                 </div>
 
                 
 
                 <div class="col-sm-2">
-                  <label for="primaryMobile" class="form-label">Mobile</label>
-                  <input type="text" class="form-control" id="primaryMobile" name="primaryMobile" placeholder="" value="{{ old('primaryMobile') }}" data-mask="(999) 999-9999" >
+                  <label for="primaryMobile" class="form-label">10. Mobile #</label>
+                  <input type="text" class="form-control" id="primaryMobile" name="primaryMobile" placeholder="Mobile Number" value="{{ old('primaryMobile') }}" data-mask="(999) 999-9999" >
                 </div>
 
                 <div class="col-sm-2 ">
-                  <label for="primaryFax" class="form-label">Fax</label>
+                  <label for="primaryFax" class="form-label">11. Fax #</label>
                   <input type="text" class="form-control" id="primaryFax" name="primaryFax" placeholder="" value="{{ old('primaryFax') }}" data-mask="(999) 999-9999">
                 </div>
 
@@ -266,7 +292,7 @@
 
                 <!-- CARD DECK -->
                 <div class="row mt-3">
-                  <label for="plan" class="form-label">Registration Levels (Choose 1)</label>                  
+                  <label for="plan" class="form-label" style="margin-bottom: 15px">12. Registration Levels (Choose 1)</label>                  
 
                   <div class="col-sm-4">
                     <div class="card mb-4 shadow-sm text-center">
@@ -279,7 +305,7 @@
                           <p class="card-text">
                             <div style="border-bottom: 1px solid rgba(0,0,0,.125); padding: 5px">Show Registration <br/>&nbsp;</div>
                             <div style="border-bottom: 1px solid rgba(0,0,0,.125); padding: 5px">2 Seminar Spots included</div>
-                            Unlimited Participants (Add Participants below)
+                            Unlimited Free Participants (Add Participants below)
                           </p>
                         </div>
 
@@ -340,10 +366,10 @@
                 
   
                 <div class="col-12" id="participantsForm">
-                  <label class="form-label">Add Participant(s) $50 is charged per participant outside your plan</label>                  
+                  <label class="form-label">13. Add Participant(s) $50 is charged per participant outside your plan</label>                  
                   <div id="error_newParticipants" class="text-danger error-label"></div>
                   <div class="mb-3" id="newParticipants"></div>
-                  <button id="addParticipants" type="button" class="btn btn-success">Add Participants</button>
+                  <button id="addParticipants" type="button" class="btn btn-success">Add Participants <i class="fa fa-user-plus"></i></button>
                 </div>
                 
 
@@ -351,7 +377,7 @@
 
               <hr class="my-4">
               <div class="d-flex justify-content-center">
-                <button class="btn btn-primary btn-lg" type="button" id="nextOne">Next</button>
+                <button class="btn btn-primary btn-lg w-25 mx-5" type="button" id="nextOne">Next <i class="fa fa-arrow-circle-right"></i></button>
               </div>
               
             </div>
@@ -372,22 +398,22 @@
                
 
                 <div class="col-sm-3">
-                  <label for="discount" class="form-label">Show Discounts(%)</label>
+                  <label for="discount" class="form-label">14. Show Discounts(%)</label>
                   <div class="col-sm-12">
                   <input type="text" class="form-control numeric" id="discount" name="discount" placeholder="" value="" required  >
                   </div>
                   <span id="error_discount" class="text-danger error-label"></span>
                 </div>
 
-                <div class="col-sm-3">
-                  <label for="discountAdditional" class="form-label">Additional Information</label>
-                  <input type="text" class="form-control" id="discountAdditional" name="discountAdditional" placeholder="" value="" required>
+                <div class="col-sm-6">
+                  <label for="discountAdditional" class="form-label">15. Additional Information</label>
+                  <textarea  class="form-control" id="discountAdditional" name="discountAdditional" placeholder=""  required></textarea>
                   <span id="error_discountAdditional" class="text-danger error-label"></span>
                 </div>                
 
                 
                 <div class="row g-2">
-                  <label for="dating" class="form-label">Special Dating Terms</label>
+                  <label for="dating" class="form-label">16. Special Dating Terms</label>
                   <div class="col-sm-2">
                     <select class="form-select" id="dating"  name="dating" required>
                       <option value="" selected>Choose...</option>
@@ -414,7 +440,7 @@
                   <div class="col-md-12 form-label">Number of discounted buys </div>
 
                   <div class="col-md-4">
-                      <label for="showBuy1" class="form-label">1st Show Buy (by December 23, 2021)</label>
+                      <label for="showBuy1" class="form-label">17. 1st Show Buy (by December 23, 2021)</label>
                       <div class="col-md-6">
                         <input type="text" class="form-control" id="showBuy1" name="showBuy1" placeholder="" value="" required  >
                       </div>
@@ -422,7 +448,7 @@
                   </div>
 
                   <div class="col-md-4">
-                      <label for="showBuy2" class="form-label">2nd Show Buy (by March 31, 2022)</label>
+                      <label for="showBuy2" class="form-label">18. 2nd Show Buy (by March 31, 2022)</label>
                       <div class="col-md-6">
                         <input type="text" class="form-control" id="showBuy2" name="showBuy2" placeholder="" value="" required  >
                       </div>
@@ -433,7 +459,7 @@
 
 
                 <div class="row g-2">
-                  <label for="incentive" class="form-label"> Dealer Incentive Program. Do you want to support the “Atlas Show Buck Program” as follows?</label>
+                  <label for="incentive" class="form-label"> 19. Dealer Incentive Program. Do you want to support the “Atlas Show Buck Program” as follows?</label>
 
                   <div class="col-sm-2">
                     <select class="form-select" id="incentive"  name="incentive" required>
@@ -460,12 +486,12 @@
 
 
                 <div class="col-12">
-                  <label for="hotbuys" class="form-label" style="margin-bottom: 0rem !important;">Hot Buys Special</label>                  
+                  <label for="hotbuys" class="form-label" style="margin-bottom: 0rem !important;">20. Hot Buys Special</label>                  
 
                     <div id="error_hotbuys" class="text-danger error-label"></div>
                   
                     <div class="mb-3" id="newHotbuys"></div>
-                  <button id="addHotbuys" type="button" class="btn btn-success">Add Hotbuys</button>
+                  <button id="addHotbuys" type="button" class="btn btn-success">Add Hotbuys <i class="fa fa-cart-plus"></i></button>
                 </div>
 
 
@@ -475,17 +501,17 @@
 
 
                 <div class="col-12">
-                  <label for="freeproducts" class="form-label" style="margin-bottom: 0rem !important;">Free Product Special</label>                  
+                  <label for="freeproducts" class="form-label" style="margin-bottom: 0rem !important;">21. Free Product Special</label>                  
                   
                   <div id="error_freeproducts" class="text-danger error-label"></div>
 
                   <div class="mb-3" id="newFreeproducts"></div>
-                  <button id="addFreeproducts" type="button" class="btn btn-success">Add Free Product</button>
+                  <button id="addFreeproducts" type="button" class="btn btn-success">Add Free Product <i class="fa fa-cart-plus"></i></button>
                 </div>
 
 
                 <div class="row g-2">
-                  <label for="promoFlyer" class="form-label">  Promotional Flyers @ $50.00EA (Dealers will be able to see your flyers on the EOS)</label>
+                  <label for="promoFlyer" class="form-label"> 22. Promotional Flyers @ $50.00EA (Dealers will be able to see your flyers on the EOS)</label>
 
                   
                   <div class="col-md-1">
@@ -511,7 +537,7 @@
 
 
                 <div class="row g-2">
-                  <label for="brandRecognition" class="form-label">  Brand Recognition</label>
+                  <label for="brandRecognition" class="form-label"> 23. Brand Recognition @ $50</label>
                   <div class="col-md-1">
                     <input type="radio" id="brandRecognition1" name="brandRecognition" class="form-check-input" value="No" required checked>
                     <label class="custom-control-label" for="brandRecognition1">No</label>
@@ -527,9 +553,6 @@
 
 
                   
-                
-
-             
 
               
               </div>
@@ -539,8 +562,8 @@
               <hr class="my-4">
 
                 <div class="d-flex justify-content-center" >
-                  <button class="btn btn-primary btn-lg" type="button" id="previousTwo" >Previous</button> 
-                  <button class="btn btn-primary btn-lg" type="button" id="nextTwo">Next</button>
+                  <button class="btn btn-secondary btn-lg mx-5 w-25" type="button" id="previousTwo" ><i class="fa fa-arrow-circle-left"></i> Previous</button> 
+                  <button class="btn btn-primary btn-lg w-25" type="button" id="nextTwo">Next <i class="fa fa-arrow-circle-right"></i></button>
                 </div>
 
               
@@ -557,21 +580,21 @@
 
                 <div class="sm-12">
                     <div class="cards">
-                      <h6 class="card-header">Thank you for considering taking part in our Pre-Show Seminars.</h6>
+                      <p class="card-header">Thank you for considering taking part in our Pre-Show Seminars.</p>
                       <div class="card-body">
-                        <p class="card-text">
+                        <div class="card-text">
                           <b>Times:</b> 9:00 am to 4:00 pm MST. <br/>                      
                           <b>Duration:</b> 30 minute sessions<br/>
                           Time slots will be allocated by Atlas and the seminars will be held during normal working hours.<br/>
                           Please indicate which day(s) works best and whether you prefer AM or PM.<br/>
-                        </p>
+                        </div>
                       </div>
                     </div>
                   </div>
 
 
                   <div class="col-sm-12">
-                    <label for="discount" class="form-label">Additional Seminars (Additional seminars are $500.00/session outside your plan.)</label>
+                    <label for="discount" class="form-label">24. Additional Seminars (Additional seminars are $500.00/session outside your plan.)</label>
                     <div class="col-sm-4">
                     <div class="input-group mb-3">
                       <div class="input-group-prepend">
@@ -592,7 +615,7 @@
 
                   <div class="col-sm-12">
 
-                    <label for="address" class="form-label">Seminar Presenter</label>
+                    <label for="address" class="form-label">25. Seminar Presenter</label>
                     <div id="error_semdays" class="text-danger error-label mb-2 "></div>
                     <table class="table table-bordered table-condensed" id="semtable">
                       
@@ -606,42 +629,22 @@
                         </thead>
                       
                         <tbody>
+<?php
+
+                          $i = 0;
+                        $dates = [8, 9, 10, 12, 15,16];
+                        $days = ["Monday", "Tuesday", "Wednesday", "Friday"];
+                        foreach ($dates as $date) {
+                          echo "<tr>";
+                          echo "<td>{$days[$i%count($days)]}</td>";
+                          echo "<td>Nov {$dates[$i%count($dates)]} </td>";
+                          echo "<td><input type='checkbox' class='semdays' name='seminardays[]' data-date='nov{$date}' value='{$date}-AM'></td>";
+                          echo "<td><input type='checkbox' class='semdays' name='seminardays[]' data-date='nov{$date}' value='{$date}-PM'></td>";
+                          echo "</tr>";
+                          $i++;
+                       }
+?>                
                         
-                          <tr>
-                            <td>Monday</td><td>Nov 8 </td>
-                            <td><input type="checkbox" class="semdays" name="seminardays[]" data-date="nov8" value="8-AM"></td>
-                            <td><input type="checkbox" class="semdays" name="seminardays[]" data-date="nov8" value="8-PM"></td>
-                          </tr>
-                        
-                          <tr>
-                            <td>Tuesday</td><td>Nov 9 </td>
-                            <td><input type="checkbox" class="semdays" name="seminardays[]" data-date="nov9" value="9-AM"></td>
-                            <td><input type="checkbox" class="semdays" name="seminardays[]" data-date="nov9" value="9-PM"></td>
-                          </tr>
-                          
-                          <tr>
-                            <td>Wednesday</td><td>Nov 10 </td>
-                            <td><input type="checkbox" class="semdays" name="seminardays[]" data-date="nov10" value="10-AM"></td>
-                            <td><input type="checkbox" class="semdays" name="seminardays[]" data-date="nov10" value="10-PM"></td>
-                          </tr>
-                          
-                          <tr>
-                            <td>Friday</td><td>Nov 12 </td>
-                            <td><input type="checkbox" class="semdays" name="seminardays[]" data-date="nov12" value="12-AM"></td>
-                            <td><input type="checkbox" class="semdays" name="seminardays[]" data-date="nov12" value="12-PM"></td>
-                          </tr>
-                          
-                          <tr>
-                            <td>Monday</td><td>Nov 15 </td>
-                            <td><input type="checkbox" class="semdays" name="seminardays[]" data-date="nov15" value="15-AM"></td>
-                            <td><input type="checkbox" class="semdays" name="seminardays[]" data-date="nov15" value="15-PM"></td>
-                          </tr>
-                          
-                          <tr>
-                            <td>Tuesday</td><td>Nov 16 </td>
-                            <td><input type="checkbox" class="semdays" name="seminardays[]" data-date="nov16" value="16-AM"></td>
-                            <td><input type="checkbox" class="semdays" name="seminardays[]" data-date="nov16" value="16-PM"></td>
-                          </tr>
 
                       </tbody>
                       
@@ -649,7 +652,7 @@
                   </div>
 
                   <div class="col-sm-4">
-                    <label for="address" class="form-label">Seminar Presenter</label>
+                    <label for="address" class="form-label">26. Seminar Presenter</label>
                     <input type="text" class="form-control" name="seminarName" id="seminarName" placeholder="Presenter Name" value="" required>
                     <span id="error_seminarName" class="text-danger error-label"></span>
                   </div>
@@ -672,10 +675,10 @@
                    
 
                     <div class="col-12">
-                      <label for="additionalPresenters" class="form-label">Add Additional Presenter(s)</label>                  
+                      <label for="additionalPresenters" class="form-label">27. Add Additional Presenter(s)</label>                  
                       <div id="error_additionalPresenters" class="text-danger error-label"></div>
                       <div class="mb-3" id="additionalPresenters"></div>
-                      <button id="addPresenters" type="button" class="btn btn-success">Add Presenters</button>
+                      <button id="addPresenters" type="button" class="btn btn-success">Add Presenters <i class="fa fa-user-plus"></i></button>
                     </div>
 
               
@@ -691,30 +694,30 @@
               <hr class="my-4">
 
               <div class="col-sm-12" id="costSummary">
-                <div class="cards">
+                <div class="cards" id="cloneSummary">
                   <h5 class="card-header">Cost Summary</h5>
                   <div class="card-body">
                    
                     <table class="table">
                       <tbody><tr>
-                          <th>Registration Level <span id="planSummary"></span></th>
+                          <th>Registration Level | <span id="planSummary"></span></th>
                           <th class="summable" id="regAmount"></th>
                       </tr>
                       <tr>
-                          <th>Virtual Show Participant(s) 
+                          <th>Virtual Show Participant(s) | 
                             <span  id="virtualParticipantCount"> </span></th>
                           <th class="summable" id="virtualParticipant"> </th>
                       </tr>
                       <tr>
-                          <th>Promotional Flyers <span  id="promotionalFlyerPages"> </span></th>
+                          <th>Promotional Flyers | <span  id="promotionalFlyerPages"> </span></th>
                           <th class="summable" id="promotionalFlyerAmount"></th>
                       </tr>
                       <tr>
-                          <th>Brand Recognition </th>
+                          <th>Brand Recognition | </th>
                           <th class="summable" id="brandAmount"></th>
                       </tr>
                       <tr>
-                          <th>Seminar Sessions <span id="seminarsessionSum"> </span></th>
+                          <th>Seminar Sessions | <span id="seminarsessionSum"> </span></th>
                           <th class="summable" id="seminarsession"></th>
                       </tr>
                       <tr>
@@ -733,8 +736,8 @@
               <hr class="my-4">
 
               <div class="d-flex justify-content-center" >
-                <button class="btn btn-primary btn-lg" type="button" id="previousThree" >Previous</button> 
-                <button class="btn btn-primary btn-lg" type="button" id="nextThree">Preview</button>
+                <button class="btn btn-secondary btn-lg mx-5 w-25" type="button" id="previousThree" ><i class="fa fa-arrow-circle-left"></i> Previous</button> 
+                <button class="btn btn-primary btn-lg w-25" type="button" id="nextThree">Preview <i class="fa fa-search"></i></button>
               </div>
 
             </div>
@@ -753,21 +756,21 @@
 <div class="tab-pane fade" id="preview" role="tabpanel" aria-labelledby="preview-tab">
               
 
-  <hr class="my-4">
+
 
   <div class="col-sm-12">
     
-      <h5 class="card-header">PREVIEW</h5>
+      <h5 class="card-header">Supplier Information</h5>
 
       <table class="table table-sm">
         <tbody>
           
           <tr>
-            <th scope="row">Name of Company</th>
-            <td id="companyName_prv"></td>
+            <th scope="row" width="20%">Name of Company</th>
+            <td id="companyName_prv" width="30%"></td>
             
-            <th scope="row">Primary Email</th>
-            <td id="primaryEmail_prv"></td>
+            <th scope="row" width="20%">Primary Email</th>
+            <td id="primaryEmail_prv" width="30%"></td>
           </tr>
           
           <tr>
@@ -797,12 +800,12 @@
       </table>
 
 
-      <h6>Registration Level</h6>
+      <p>Registration Level</p>
       <table class="table table-sm" >
         <thead>
           <tr>
-            <th scope="row" id="regPlan"></th>
-            <td id="regDescr"></td>
+            <th scope="row" id="regPlan" width="20%"></th>
+            <td id="regDescr" width="80%"></td>
           </tr>
         </thead>
         
@@ -811,7 +814,7 @@
       </table>
 
 
-      <h6>Additional Participant(s)</h6>
+      <p>Additional Participant(s)</p>
       <table class="table table-sm" >
         <thead>
           <tr>
@@ -827,6 +830,7 @@
 <div class="pagebreak"> </div>
 <div class="mt-4"></div>
 
+<h5 class="card-header">Special Information</h5>
 
       <table class="table table-sm">
         <tbody>
@@ -842,7 +846,7 @@
 
           <tr>
             <th scope="row">Special Dating Terms</th>
-            <td id="dating_prv" colspan="1"></td>
+            <td id="dating_prv" colspan="3"></td>
           </tr>
 
 
@@ -872,7 +876,7 @@
       </table>
 
 
-      <h6>Hot Buys Special</h6>
+      <p>Hot Buys Special</p>
       <table class="table table-sm" >
         <thead>
           <tr>
@@ -888,10 +892,10 @@
         <tbody>
           
           <tr>
-            <th scope="row">Promotional Flyers Pages (@ $50.00 EA)</th>
+            <th scope="row" width="">Promotional Flyers Pages (@ $50.00 EA)</th>
             <td id="promoFlyer_prv"></td>
             
-            <th scope="row">Brand Recognition</th>
+            <th scope="row">Brand Recognition @ $50</th>
             <td id="brandRecog_prv"></td>
           </tr>
         
@@ -918,9 +922,9 @@
 
       <div class="mt-4"></div>
 
+      <h5 class="card-header">Vendor Seminar</h5>
 
 
-      <h6>Seminars</h6>
       <table class="table table-sm">
           <tr>
             <th scope="row">Seminar Sessions</th>
@@ -936,7 +940,7 @@
       </table>
 
 
-      <h6>Seminar Presenter(s)</h6>
+      <p>Seminar Presenter(s)</p>
       <table class="table table-sm" >
         <thead>
           <tr>
@@ -955,20 +959,15 @@
       <div id="costPreview" class="mt-4"></div>
 
 
-
-
-
     
   </div>
 
 
-  
-
   <hr class="my-4">
 
   <div class="d-flex justify-content-center d-print-none" >
-    <button class="btn btn-primary btn-lg" type="button" id="previousFour" >Previous</button> 
-    <button class="btn btn-primary btn-lg" type="submit" id="submit">Submit</button>
+    <button class="btn btn-secondary btn-lg mx-5 w-25" type="button" id="previousFour" > <i class="fa fa-arrow-circle-left"></i> Previous</button> 
+    <button class="btn btn-primary btn-lg w-25" type="submit" id="submit">Submit <i class="fa fa-arrow-circle-up"></i></button>
   </div>
 
 
@@ -994,10 +993,6 @@
   <footer class="my-5 pt-5 text-muted text-center text-small  d-print-none">
     <p class="mb-1">&copy; 2021 Atlas Trailer Coach Products </p>
     <ul class="list-inline">
-      <li class="list-inline-item"><a href="#">Privacy</a></li>
-      <li class="list-inline-item"><a href="#">Terms</a></li>
-      <li class="list-inline-item"><a href="#">Support</a></li>
-      <li class="list-inline-item"> | </li>
       <li class="list-inline-item"><a href="{{ route('auth.logout') }}">Logout</a></li>
     </ul>
   </footer>
@@ -1009,10 +1004,10 @@
 <div id="participantTemplate" style="display: none;">
   <div class="row mt-2 inputFormParticipants" id="inputFormParticipants"> 
   <span id="error_Participants" class="text-danger error-label"></span>
-  <div class="col-sm-4"><input type="text" class="form-control participantsName " name="participantsName[]" placeholder="Participants Name" value="" required><div class="invalid-feedback">Participants Name is required.</div></div>
-  <div class="col-sm-3"><input type="text" class="form-control participantsEmail" name="participantsEmail[]" placeholder="Participants Email" value="" required><div class="invalid-feedback">Primary Contact is required.</div></div>
-  <div class="col-sm-3"><input type="text" class="form-control participantsMobile " name="participantsMobile[]" placeholder="Participants Mobile" value="" required><div class="invalid-feedback">Primary Contact is required.</div></div>
-  <div class="col-sm-2"><div class="input-group-append"><button id="removeParticipants" type="button" class="btn btn-danger">Remove</button></div></div>
+  <div class="col-sm-4"><input type="text" class="form-control participantsName " name="participantsName[]" placeholder="Participant's Name" value="" required><div class="invalid-feedback">Participant's Name is required.</div></div>
+  <div class="col-sm-3"><input type="text" class="form-control participantsEmail" name="participantsEmail[]" placeholder="Email" value="" required><div class="invalid-feedback">Primary Email is required.</div></div>
+  <div class="col-sm-3"><input type="text" class="form-control participantsMobile " name="participantsMobile[]" placeholder="Mobile Number" value="" required data-mask="(999) 999-9999"><div class="invalid-feedback">Primary Mobile is required.</div></div>
+  <div class="col-sm-2"><div class="input-group-append"><button id="removeParticipants" type="button" class="btn btn-danger">Remove <i class="fa fa-user-times"></i></button></div></div>
   </div>
 </div>
 
@@ -1023,15 +1018,15 @@
     <div class="col-sm-3">
       <input type="text" class="form-control seminarAddEmail" name="seminarAddEmail[]" placeholder="Presenter Email" value="" required><div class="invalid-feedback">Presenter Email is required.</div></div>
     <div class="col-sm-3">
-      <input type="text" class="form-control seminarAddMobile" name="seminarAddMobile[]" placeholder="Presenter  Mobile" value="" required><div class="invalid-feedback">Presenter Mobile is required.</div></div>
-    <div class="col-sm-2"><div class="input-group-append"><button id="removePresenters" type="button" class="btn btn-danger">Remove</button></div></div>
+      <input type="text" class="form-control seminarAddMobile" name="seminarAddMobile[]" placeholder="Presenter  Mobile" value="" required data-mask="(999) 999-9999"><div class="invalid-feedback">Presenter Mobile is required.</div></div>
+    <div class="col-sm-2"><div class="input-group-append"><button id="removePresenters" type="button" class="btn btn-danger">Remove <i class="fa fa-user-times"></i> </button></div></div>
   </div>
 </div>
 
 <div id="freeProductsTemplate" style="display: none;">
   <div class="row mt-2 inputFreeproducts" id="inputFreeproducts"> 
   <div class="col-sm-4"><input type="text" class="form-control freeProducts" name="freeProducts[]" placeholder="e.g Buy 10 products and get 1 free" value="" required><div class="invalid-feedback">Free Products is required</div></div>
-  <div class="col-sm-2"><div class="input-group-append"><button id="removeFreeproducts" type="button" class="btn btn-danger">Remove</button></div></div></div>
+  <div class="col-sm-2"><div class="input-group-append"><button id="removeFreeproducts" type="button" class="btn btn-danger">Remove <i class="fa fa-minus-square"></i></button></div></div></div>
 </div>
 
 
@@ -1040,7 +1035,7 @@
   <div class="row mt-2 inputFormHotBuys" id="inputFormHotbuys"> <div class="col-sm-2">
     <input type="text" class="form-control hotbuysVendor" name="hotbuysVendor[]" placeholder="Enter Vendor #" value="" required=""><div class="invalid-feedback">Vendor # is required.</div></div><div class="col-sm-5">
     <input type="text" class="form-control hotbuysDescription" name="hotbuysDescription[]" placeholder="Description" value="" required=""><div class="invalid-feedback">Description is required.</div></div><div class="col-sm-3">
-    <input type="text" class="form-control hotbuysNetcost" id="hotbuysNetcost" name="hotbuysNetcost[]" placeholder="Net cost or Discount" value="" required=""><div class="invalid-feedback">Net Cost or DIscount</div></div><div class="col-sm-2"><div class="input-group-append"><button id="removeHotbuys" type="button" class="btn btn-danger">Remove</button></div></div></div>
+    <input type="text" class="form-control hotbuysNetcost" id="hotbuysNetcost" name="hotbuysNetcost[]" placeholder="Net cost or Discount" value="" required=""><div class="invalid-feedback">Net Cost or Discount</div></div><div class="col-sm-2"><div class="input-group-append"><button id="removeHotbuys" type="button" class="btn btn-danger">Remove <i class="fa fa-minus-square"></i></button></div></div></div>
 </div>
    
 

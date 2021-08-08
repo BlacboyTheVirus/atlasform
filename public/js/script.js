@@ -9,13 +9,11 @@
 
 $(document).ready(function () {
 
-  $("input[name='plan']:checked").closest('.card').addClass("bg-card-selected");
-
-
   const data = {
     plan            : "B",
-    planFee         : 0,
-    freeUsers       : 0,
+    planFee         : 1000,
+    freeUsers       : 1,
+    partMulti       : 1,
     addedUsers      : 0,
     flyerPages      : 0,
     brandRecog      : 0,
@@ -23,23 +21,106 @@ $(document).ready(function () {
     dating          : 0,
   };
 
+  data.seminarCount =  ($('#seminarCount').val())*1;
+  updateData(data);
+  
+  $("input[name='plan']:checked").closest('.card').addClass("bg-card-selected");
+
+  var estate = $('#hiddenState').val();
+  var country = [
+    [""],
+    ["Alberta","British Columbia","Manitoba","New Brunswick","Newfoundland and Labrador","Mnorthwest Territories","Nova Scotia","Nunavut","Ontario","Prince Edward Island","Quebec","Saskatchewan","Yukon"],
+    ["Alabama","Alaska","Arizona","California","Colorado","Connecticut","Delware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Loiusiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hamshire","New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming"]
+  ];
+  var cntry = $('#country').val();
+  switch (cntry) {
+    case "":
+      index = 0;
+      break;
+    case "Canada":
+      index = 1;
+      break;
+    case "USA":
+      index = 2;
+      break;
+  }
+
+  $("#state").empty();
+  $("#state").append("<option value=''>Choose...</option>");
+  
+  for (c of country[index]){
+      if (c == estate){
+        $("#state").append("<option selected>"+c+"</option>");
+      } else {
+        $("#state").append("<option>"+c+"</option>");
+      }
+      
+  }
+
+  //Plan selection
+$(".card").on("click", function () {
+  $(".card").removeClass("bg-card-selected");
+  $(this).find("input[name='plan']").prop("checked", true);
+  $(this).addClass("bg-card-selected");
+
+  
+  
+  var plan = $("input[name='plan']:checked").val();
+  
+  data.plan = plan;
+  updateData(data);
+
+  var count = 0;
+    $(".semdays:checked").each(function () {
+        count++;
+        if( ((data.seminarCount*1) +  data.adSem) < count){
+            $(this).prop("checked",false);
+        }
+    });
+    
+  
+  if (plan == 'C'){
+    $('#participantsForm').hide();
+    //disable seminar registration
+    $('#seminarPlus, #seminarMinus, #seminarName, #seminarEmail, #seminarPhone, #addPresenters, .semdays').prop('disabled', true);
+    $('#hidder').hide();
+  } else {
+    $('#participantsForm').show();
+    //enable seminar registration
+    $('#seminarPlus, #seminarMinus, #seminarName, #seminarEmail, #seminarPhone, #addPresenters, .semdays').prop('disabled', false);
+    $('#hidder').show();
+  }
+
+  
+});
+ 
 
   function updateData(data){
-      switch (data.plan) {
+    data.plan = $("input[name='plan']:checked").val();
+    data.addedUsers = $("#newParticipants > div").length;
+    data.seminarCount = $("#seminarCount").val();
+    data.brandRecog = ($("input[name='brandRecognition']:checked").val() == "Yes" ? 50:0);
+
+
+   
+    switch (data.plan) {
         case 'A':
           data.planFee = 2000;
           data.adSem = 2;
           data.freeUsers = 0;
+          data.partMulti = 0;
           break;
         case 'B':
           data.planFee = 1000;
           data.adSem = 1;
           data.freeUsers = 1;
+          data.partMulti = 1;
           break;
         case 'C':
           data.planFee = 500;
           data.adSem = 0;
           data.freeUsers = 0;
+          data.partMulti = 0;
           break;
       }
 
@@ -63,7 +144,9 @@ $(document).ready(function () {
       }else{
         data.flyerPages = 0;
       }
-
+  
+      data.seminarCount =  ($('#seminarCount').val())*1;
+      $('#seminarTotal').text('You have ' + (data.seminarCount * 1 + data.adSem * 1) + ' seminar sessions.') ;
 
       console.log(data);
   }
@@ -73,6 +156,8 @@ $(document).ready(function () {
   function doSummary(data){
 
       var vshowAmount;
+
+      data.plan = $("input[name='plan']:checked").val();
 
       if (data.plan == 'B'){
 
@@ -86,7 +171,7 @@ $(document).ready(function () {
             vshowAmount = (data.addedUsers - data.freeUsers) * 50 ;
          
 
-          $("#virtualParticipantCount").text( data.addedUsers + ' total  ('+ data.freeUsers + ' free) | ' + (data.addedUsers - data.freeUsers)  + ' participant(s) @ $50 each)');
+          $("#virtualParticipantCount").text( data.addedUsers + ' total  ('+ data.freeUsers + ' free) | ' + (data.addedUsers - data.freeUsers)  + ' additional participant(s) @ $50 each)');
 
           $("#virtualParticipant").text(vshowAmount);
           $("#planSummary").text('Class '+ data.plan);
@@ -95,9 +180,10 @@ $(document).ready(function () {
           $("#promotionalFlyerPages").text(data.flyerPages + ' pages @ $50 per page');
           $("#promotionalFlyerAmount").text(data.flyerPages * 50);
 
+          $("#isbrandRecog").text(data.brandRecog==50?'Yes':'No');
           $("#brandAmount").text(data.brandRecog);
 
-          $("#seminarsessionSum").text( (data.adSem + data.seminarCount) + ' total session (' + data.adSem + ' free) ' + data.seminarCount + ' additional sessions @ $500' );  
+          $("#seminarsessionSum").text( (data.adSem + data.seminarCount) + ' total (' + data.adSem + ' free) | ' + data.seminarCount + ' additional sessions @ $500' );  
 
           $("#seminarsession").text( data.seminarCount * 500);    
       
@@ -109,7 +195,7 @@ $(document).ready(function () {
 
            
           
-          $("#virtualParticipantCount").text( 'Unlimited free user)');
+          $("#virtualParticipantCount").text( data.addedUsers + ' total | (Unlimited free user)');
           $("#virtualParticipant").text( vshowAmount );
 
           $("#planSummary").text('Class '+ data.plan);
@@ -118,9 +204,10 @@ $(document).ready(function () {
           $("#promotionalFlyerPages").text(data.flyerPages + ' pages @ $50 per page');
           $("#promotionalFlyerAmount").text(data.flyerPages * 50);
 
+          $("#isbrandRecog").text(data.brandRecog==50?'Yes':'No');
           $("#brandAmount").text(data.brandRecog);
 
-          $("#seminarsessionSum").text( (data.adSem + data.seminarCount) + ' total session (' + data.adSem + ' free)' + data.seminarCount + ' additional sessions @ $500' );  
+          $("#seminarsessionSum").text( (data.adSem + data.seminarCount) + ' total  (' + data.adSem + ' free) | ' + data.seminarCount + ' additional sessions @ $500' );  
 
           $("#seminarsession").text( data.seminarCount * 500);    
 
@@ -151,7 +238,7 @@ $(document).ready(function () {
       $('#seminarTotal').text('You have ' + (data.seminarCount * 1 + data.adSem * 1) + ' seminar sessions.') ;
 
       var sum = 0;
-        $(".summable").each(function () {
+        $("#costSummary .summable").each(function () {
             sum += parseFloat($(this).text());
         });
         $("#total").text( "$" + sum);
@@ -174,15 +261,15 @@ $(document).ready(function () {
 
 
 
-    $(".semdays:checked").each(function () {
+    // $(".semdays:checked").each(function () {
           
-      semtimeArray = $(this).val().split('-');
-      semdate = semtimeArray[0];
-      semtime = semtimeArray[1];
+    //   semtimeArray = $(this).val().split('-');
+    //   semdate = semtimeArray[0];
+    //   semtime = semtimeArray[1];
 
-       seminar += semdate + ' November (' + semtime + ') // ';
+    //    seminar +='November '+semdate + dateOrd(semdate)+ ', 2021 (' + semtime + ') // ';
     
-    });
+    // });
 
 
     var plan = $("input[name='plan']:checked").val();
@@ -212,7 +299,7 @@ $(document).ready(function () {
       addUser += '</tr>';
     });
     
-    if ($("#newParticipants .inputFormParticipants").length == 0){
+    if ($("#newParticipants .inputFormParticipants").length == 0 || plan =="C"){
       addUser ='<tr><td colspan=3>  N / A  </td> </tr>';
     }
 
@@ -252,15 +339,22 @@ $(document).ready(function () {
 
      $('#promoFlyer_prv').text( data.flyerPages );
 
-     $('#brandRecog_prv').text( (data.brandRecog)?'Yes':'No' );
+     $('#brandRecog_prv').text( (data.brandRecog==50)?'Yes':'No' );
 
 
     // Adding a row inside the Additional Users tbody.
-    var freeProducts='';   
+    var freeProducts=[]; 
+    
     $("#newFreeproducts .inputFreeproducts").each(function(){
-      freeProducts +=  $(this).find(".freeProducts").val();
-      freeProducts +=  ' | ';
+         freeProducts.push ($(this).find(".freeProducts").val());
     });
+
+    freeProducts = freeProducts.join(" | ") ;
+    
+    // $("#newFreeproducts .inputFreeproducts").each(function(){
+    //   freeProducts +=  $(this).find(".freeProducts").val();
+    //   freeProducts +=  ' | ';
+    // });
 
     if ($("#newFreeproducts .inputFreeproducts").length == 0){
       freeProducts ='N / A ';
@@ -292,28 +386,38 @@ $(document).ready(function () {
       addPresenters += '</tr>';
     });
 
+    if ($("#additionalPresenters .inputFormSeminar").length == 0 || plan =="C"){
+      addPresenters ='<tr><td colspan=3>  N / A  </td> </tr>';
+    }
+
     $('#addPresentersTBody').prepend(addPresenters);
 
 
+    if (plan != "C"){
+      $('#seminarSessions_prv').text(data.adSem + data.seminarCount);
+    }else{
+      $('#seminarSessions_prv').text(0);
+    }
 
-    $('#seminarSessions_prv').text(data.adSem + data.seminarCount);
-
-    var seminar = '';
+    var seminar = '';    
     
-    $(".semdays:checked").each(function () {
-          
-      semtimeArray = $(this).val().split('-');
-      semdate = semtimeArray[0];
-      semtime = semtimeArray[1];
+    if (plan != "C"){
+      seminar = [];
+       $(".semdays:checked").each(function () {
+         semtimeArray = $(this).val().split('-');
+         semdate = semtimeArray[0];
+         semtime = semtimeArray[1];
+         seminar.push('November '+ semdate + ', 2021  (' + semtime + ' Session)');
+       });
+       seminar = seminar.join(" | ");
+      
+    }
 
-       seminar += semdate + ' November (' + semtime + ') // ';
-    
-    });
     $('#seminarDatesTime_prv').text(seminar);
 
 
 
-    var costSummary = $('#costSummary').clone();
+    var costSummary = $('#cloneSummary').clone();
     $('#costPreview').html(costSummary);
     
 
@@ -401,37 +505,11 @@ $("#country").on("change",function () {
         $("#state").append("<option>"+c+"</option>");
     }
 
-
 });
 
 
 
-//Plan selection
-$(".card").on("click", function () {
-  $(".card").removeClass("bg-card-selected");
-  $(this).find("input[name='plan']").prop("checked", true);
-  $(this).addClass("bg-card-selected");
-  
-  var plan = $("input[name='plan']:checked").val();
-  
-  data.plan = plan;
-  updateData(data);
 
-  
-  if (plan == 'C'){
-    $('#participantsForm').hide();
-    //disable seminar registration
-    $('#seminarPlus, #seminarMinus, #seminarName, #seminarEmail, #seminarPhone, #addPresenters, .semdays').prop('disabled', true);
-    $('#hidder').hide();
-  } else {
-    $('#participantsForm').show();
-    //enable seminar registration
-    $('#seminarPlus, #seminarMinus, #seminarName, #seminarEmail, #seminarPhone, #addPresenters, .semdays').prop('disabled', false);
-    $('#hidder').show();
-  }
-
-  
-});
 
 
 
@@ -457,6 +535,7 @@ $("#incentive").on("change",function () {
   }else{
       $("#incentiveOthers").parent().hide();
   }
+  updateData(data);
 });
 
 
@@ -470,7 +549,19 @@ $("input[name='promoFlyer']").on("click", function () {
       $("#error_promoflyerPages").text('');
       $("#promoflyerPages").removeClass("has-error");
   }
+  updateData(data);
 });
+
+
+$("input[name='brandRecognition']").on("click", function () {
+  if($(this).prop("checked") && $(this).val()=="Yes"){
+     data.brandRecog = 50;
+  }else{
+    data.brandRecog = 0;
+  }
+  updateData(data);
+});
+
 
 
 
@@ -603,6 +694,7 @@ $("#seminarMinus").click(function () {
 
   $('#nextOne').click(function(){
     //check if all fields are filled
+    var error_companyName = "";
     var error_address = "";
     var error_country = "";
     var error_state = "";
@@ -615,6 +707,17 @@ $("#seminarMinus").click(function () {
     var error_primaryFax = "";
 
     var errors = 0;
+
+    if ($.trim($("#companyName").val()).length == 0) {
+      error_companyName = "Company Name is required";
+      $("#error_companyName").text(error_companyName);
+      $("#companyName").addClass("has-error");
+      errors++;
+    } else {
+      error_companyName = "";
+      $("#error_companyName").text(error_companyName);
+      $("#companyName").removeClass("has-error");
+    }
 
     if ($.trim($("#address").val()).length == 0) {
       error_address = "Address is required";
@@ -801,7 +904,6 @@ $('#nextTwo').click(function(){
 
   var errors = 0;
 
-
   if ($.trim($("#discount").val()).length == 0) {
     error_discount = "Discount is required";
     $("#error_discount").text(error_discount);
@@ -932,8 +1034,6 @@ $('#nextTwo').click(function(){
       $(this).removeClass("has-error");
     }
   });
-
-
   
   if ( $("input[name='promoFlyer']:checked").val() == "yes" && ($.trim($("#promoflyerPages").val()).length == 0) ) {
     error_promoflyerPages = "Promo Flyer Pages is required";
@@ -947,21 +1047,46 @@ $('#nextTwo').click(function(){
   }
  
   
+  updateData(data);      
+  doSummary(data);
+  doPreview();
+
   if (!errors){
    // $('form').submit();
 
-    $('#specials-tab').removeClass('active');
-    $('#specials-tab').addClass('disabled');
-    $('#specials').removeClass('active');
-    
-    $('#seminar-tab').addClass('active');
-    $('#seminar-tab').removeClass('disabled');
-    $('#seminar').addClass('active show in');
 
-    $('html, body').animate({
-      scrollTop: 0
-    }, 100);
+   
 
+
+      if (data.plan == "C"){
+        $('#specials-tab').removeClass('active');
+        $('#specials-tab').addClass('disabled');
+        $('#specials').removeClass('active');
+        
+        $('#preview-tab').addClass('active');
+        $('#preview-tab').removeClass('disabled');
+        $('#preview').addClass('active show in');
+
+       
+      } else {
+
+        $('#specials-tab').removeClass('active');
+        $('#specials-tab').addClass('disabled');
+        $('#specials').removeClass('active');
+        
+        $('#seminar-tab').addClass('active');
+        $('#seminar-tab').removeClass('disabled');
+        $('#seminar').addClass('active show in');
+
+
+      }
+
+      $('html, body').animate({
+        scrollTop: 0
+      }, 100);
+
+
+   
 
     //UPDATE
     
@@ -1007,6 +1132,9 @@ $('#nextTwo').click(function(){
 // S E C O N D  P A N E  Previous
 
 $('#previousTwo').click(function(){
+
+  updateData(data);      
+  doSummary(data);
 
   $('#specials-tab').removeClass('active');
   $('#specials-tab').addClass('disabled');
@@ -1150,29 +1278,7 @@ $('#nextThree').click(function(){
 
   } else {
 
-    // if (data.plan=="C"){
-    //   errors = 0;
 
-    //    //UPDATE
-    //   updateData(data);      
-    //   doSummary(data);
-    //   doPreview();
-
-    //   $('#seminar-tab').removeClass('active');
-    //   $('#seminar-tab').addClass('disabled');
-    //   $('#seminar').removeClass('active');
-      
-    //   $('#preview-tab').addClass('active');
-    //   $('#preview-tab').removeClass('disabled');
-    //   $('#preview').addClass('active show in');
-  
-    //   $('html, body').animate({
-    //     scrollTop: 0
-    //   }, 100);
-      
-    //   return false;
-
-    // }
 
     $.alert({
       columnClass: 'col-md-6',
@@ -1229,13 +1335,26 @@ $('#previousThree').click(function(){
 
 $('#previousFour').click(function(){
 
-  $('#preview-tab').removeClass('active');
-  $('#preview-tab').addClass('disabled');
-  $('#preview').removeClass('active');
-  
-  $('#seminar-tab').addClass('active');
-  $('#seminar-tab').removeClass('disabled');
-  $('#seminar').addClass('active show in');
+
+  if (data.plan == "C"){
+    $('#preview-tab').removeClass('active');
+    $('#preview-tab').addClass('disabled');
+    $('#preview').removeClass('active');
+    
+    $('#specials-tab').addClass('active');
+    $('#specials-tab').removeClass('disabled');
+    $('#specials').addClass('active show in');
+
+  } else {
+      
+      $('#preview-tab').removeClass('active');
+      $('#preview-tab').addClass('disabled');
+      $('#preview').removeClass('active');
+      
+      $('#seminar-tab').addClass('active');
+      $('#seminar-tab').removeClass('disabled');
+      $('#seminar').addClass('active show in');
+  }
 
   $('html, body').animate({
     scrollTop: $("body").offset().top
@@ -1258,46 +1377,52 @@ $("#submit").on("click", function(){
 ////////////////////////////////////////////////////////////////////////
 
 $(".semdays").on("click",function () {
-  var plan = $("input[name='plan']:checked").val();
-
+  
   updateData(data);      
   doSummary(data);
 
    
-  if($(this).prop("checked")){
-      $("input[data='"+$(this).attr("data")+"']").not($(this)).prop("checked",false);
-     // if($(".semdays:checked").length > ($('#seminarCount').val()*1) + adSem){
-      if($(".semdays:checked").length > (data.seminarCount*1) + data.adSem){
-          $(this).prop("checked",false);
-          
-          $.alert({
-            columnClass: 'col-md-6',
-            backgroundDismiss: true,
-            onClose: function () {
-                $('html, body').animate({
-                  scrollTop: $("#seminarCount").offset().top-40
-                }, 100);
-             },
-            icon: 'fa fa-warning',
-            title: 'Seminar Sessions exceeded!  !',
-            content: 'You have exceeded the limit of Seminar Sessions for your Plan. Kindly add Seminar Sessions @ $500 each.',
-            type: 'red',
-            typeAnimated: true,
-          });
+      if($(this).prop("checked")){
+          $("input[data='"+$(this).attr("data")+"']").not($(this)).prop("checked",false);
+        // if($(".semdays:checked").length > ($('#seminarCount').val()*1) + adSem){
+          if($(".semdays:checked").length > (data.seminarCount*1) + data.adSem){
+              $(this).prop("checked",false);
+              
+              $.alert({
+                columnClass: 'col-md-6',
+                backgroundDismiss: true,
+                onClose: function () {
+                    $('html, body').animate({
+                      scrollTop: $("#seminarCount").offset().top-40
+                    }, 100);
+                },
+                icon: 'fa fa-warning',
+                title: 'Seminar Sessions exceeded!  !',
+                content: 'You have exceeded the limit of Seminar Sessions for your Plan. Kindly add Seminar Sessions @ $500 each.',
+                type: 'red',
+                typeAnimated: true,
+              });
 
-      }else{
+          }else{
 
+          }
       }
-  }
+
+    });
 
 });
 
-});
 
 
 
+// function dateOrd($date){
 
+//   var suffixes = ["th", "st", "nd", "rd","th", "th", "th", "th", "th", "th" ];
+//   $trail = $date % 10;
 
+//   return(suffixes[$trail]);
+
+// }
 
 
 

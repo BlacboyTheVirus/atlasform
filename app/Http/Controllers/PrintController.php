@@ -3,18 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Models\Form;
-use App\Models\Hotbuys;
 use App\Models\Plan;
-use App\Models\Seminar;
 use App\Models\Vendor;
+use App\Models\Hotbuys;
+use App\Models\Seminar;
 use Illuminate\Http\Request;
+use App\Notifications\VendorRegistration;
 
 class PrintController extends Controller
 {
     public function index(){
+      
         $vendor = Vendor::where('id', '=', session('LoggedVendor'))->first();
-        
-        //$data =  [ 'LoggedVendorInfo' => Vendor::where('id', '=', session('LoggedVendor'))->first() ];
+
         $addsem = 0;
         $regamount = 500;
         $freeusers = 0;
@@ -29,16 +30,14 @@ class PrintController extends Controller
         }
 
 
-      
-        
         return view ( 'print', 
                             [
-                                'companyName'        => $vendor->name,
+                                'companyName'       => $vendor->name,
                                 'address'           => $vendor->form->address,
                                 'country'           => $vendor->form->country,
                                 'state'             => $vendor->form->state,
                                 'city'              => $vendor->form->city,
-                                'zipcode'           => $vendor->form->zipCode,
+                                'zipcode'           => $vendor->form->zipcode,
                                 'primaryContact'    => $vendor->form->primaryContact,
                                 'primaryEmail'      => $vendor->form->primaryEmail,
                                 'primaryTelephone'  => $vendor->form->primaryTelephone,
@@ -64,29 +63,21 @@ class PrintController extends Controller
 
                                 'freeproducts'      => $vendor->freeproducts,
 
-                                'seminardays'       => $vendor->seminardays,
-                                
-                                
                                 'addsem'            => $addsem,
                                 'regamount'         => $regamount,
                                 'freeusers'         => $freeusers,
 
 
-                                'seminarCount'      => $vendor->seminar->seminarCount,
-                                'seminarName'       => $vendor->seminar->seminarName,
-                                'seminarEmail'      => $vendor->seminar->seminarEmail,
-                                'seminarPhone'      => $vendor->seminar->seminarPhone,
+                                'seminardays'       => $vendor->seminardays,
+
+                                'seminarCount'      => (isset($vendor->seminar->seminarCount)?$vendor->seminar->seminarCount:0),
+                                'seminarName'       => (isset($vendor->seminar->seminarName)?$vendor->seminar->seminarName:""),
+                                'seminarEmail'      => (isset($vendor->seminar->seminarEmail)?$vendor->seminar->seminarEmail:""),
+                                'seminarPhone'      => (isset($vendor->seminar->seminarPhone)?$vendor->seminar->seminarPhone:""),
 
                                 'presenters'       => $vendor->presenters
                             ]
         );
-
-
-
-
-
-
-
 
     }
 

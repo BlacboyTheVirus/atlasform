@@ -122,7 +122,7 @@
 
 
     <div class="py-2 text-center">
-      <img class="d-block mx-auto mb-4" src="images/atlas.png" alt="" height="150">
+      <img class="d-block mx-auto mb-4" src="images/atlas_banner_bb.png" alt="" width="100%">
     </div>
     
     <div class="container">
@@ -169,7 +169,7 @@
     
               <tr>
                 <th scope="row">Address</th>
-                <td id="address_prv" colspan="3" >{{ $address . ', '. $city . ', '. $state. ', '. $zipcode }}</td>
+                <td id="address_prv" colspan="3" >{{ $address . ', '. $city . ', '. $state. ', '.$country. ', '. $zipcode }}</td>
               </tr>
     
             </tbody>
@@ -407,7 +407,7 @@
 
 
 
-                @if ($presenters)
+                @if ($presenters && ($plan != "C"))
                 @foreach ($presenters as $presenter)
                 <tr>
                     <td>{{ $presenter->seminarAddName }}</td>
@@ -439,19 +439,20 @@
                       </tr>
                       <tr>
                           <th>Virtual Show Participant(s) 
-                             <span  id="virtualParticipantCount"> >>  
+                             <span  id="virtualParticipantCount"> |  
                                  
                             @if ($plan == "C" )
                                 (N/A) 
                             @elseif ($plan == "B" && $participants->count() <= 1 )
-                                1 total (1 free) | 0 participants @ $50  
+                                {{ $participants->count() }} total (1 free) | 0 additional participants @ $50  
                             @elseif ($plan == "B" && $participants->count() > 1 )
-                                {{($participants->count() - 1) }}  (1 free) | {{$participants->count() - 1}} participants @ $50
+                                {{($participants->count() ) }} total  (1 free) | {{$participants->count() - 1}} additional participants @ $50
+                            @elseif ($plan == "A")
+                            {{$participants->count()}} (Unlimited Free Participants)
                             @endif
 
 
-                                
-                               
+ 
                             
                             </span></th>
                           
@@ -467,11 +468,11 @@
 
                       </tr>
                       <tr>
-                          <th>Promotional Flyers <span  id="promotionalFlyerPages">{{ $promoflyerPages}} pages @ $50 per page </span></th>
+                          <th>Promotional Flyers | <span  id="promotionalFlyerPages">{{ $promoflyerPages}} pages @ $50 per page </span></th>
                           <th class="summable" id="promotionalFlyerAmount"> {{ $promoflyerPages * 50}} </th>
                       </tr>
                       <tr>
-                          <th>Brand Recognition  ({{ $brandRecognition}})</th>
+                          <th>Brand Recognition @ $50 | ({{ $brandRecognition}})</th>
                           <th class="summable" id="brandAmount">
                             @if($brandRecognition =="Yes") 50 @else 0 @endif
                           </th>
@@ -480,7 +481,7 @@
                           <th>Seminar Sessions 
                               <span id="seminarsessionSum"> 
                                 
-                               | {{$addsem + $seminarCount}} total session ({{ $addsem }} free) | {{$seminarCount}} additional sessions @ $500
+                               | {{$addsem + $seminarCount}} total ({{ $addsem }} free) | {{$seminarCount}} additional sessions @ $500
 
                               </span>
                           </th>
@@ -520,8 +521,9 @@
         <hr class="my-4">
 
         <div class="d-flex justify-content-center d-print-none" >
-            <button class="btn btn-primary btn-lg mx-2" type="button" id="print" onclick="window.print();" >Print</button> 
-            <a href="{{ route('auth.logout') }}" class="btn btn-danger btn-lg" type="button" id="submit">Logout</a>
+            <button class="btn btn-secondary btn-lg mx-1" type="button" id="print" onclick="window.print();" >Print</button> 
+            <a href="{{ route('edit') }}" class="btn btn-primary btn-lg mx-1" type="button" id="submit">Edit</a>
+            <a href="{{ route('auth.logout') }}" class="btn btn-danger btn-lg mx-1" type="button" id="submit">Logout</a>
         </div>
 
             
@@ -533,10 +535,6 @@
   <footer class="my-5 pt-5 text-muted text-center text-small  d-print-none">
     <p class="mb-1">&copy; 2021 Atlas Trailer Coach Products </p>
     <ul class="list-inline">
-      <li class="list-inline-item"><a href="#">Privacy</a></li>
-      <li class="list-inline-item"><a href="#">Terms</a></li>
-      <li class="list-inline-item"><a href="#">Support</a></li>
-      <li class="list-inline-item"> | </li>
       <li class="list-inline-item"><a href="{{ route('auth.logout') }}">Logout</a></li>
     </ul>
   </footer>

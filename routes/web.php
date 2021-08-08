@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FormController;
+use App\Http\Controllers\MailController;
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\PrintController;
 
@@ -24,7 +25,13 @@ Route::group(['middleware'=> ['AuthCheck']],function(){
     Route::get('/form', [FormController::class, 'index'])->name('form');
     Route::post('/form', [FormController::class, 'store'])->name('form');
 
+    Route::get('/edit', [FormController::class, 'edit'])->name('edit');
+    Route::post('/edit', [FormController::class, 'update'])->name('edit');
+
+
     Route::get('/print', [PrintController::class, 'index'])->name('print');
+
+    Route::get('/mails', [MailController::class, 'sendmail'])->name('mails');
 
     Route::get('/auth/login', [MainController::class, 'login'])->name('auth.login');
     Route::get('/auth/register', [MainController::class, 'register'])->name('auth.register');
