@@ -238,7 +238,7 @@
                 <th scope="row">Show Discount</th>
                 <td id="discount_prv">{{ $discount }}%</td>
                 
-                 <th scope="row">Addition Information</th>
+                 <th scope="row">Additional Information</th>
                 <td id="discountAdditional_prv"> {{ $discountAdditional }} </td>
               </tr>
     

@@ -321,7 +321,7 @@ tbody, td, tfoot, th, thead, tr {
                 <td class="hd">10. Show Discount</td>
                 <td id="discount_prv">{{ $discount }}%</td>
                 
-                 <td class="hd">11. Addition Information</td>
+                 <td class="hd">11. Additional Information</td>
                 <td id="discountAdditional_prv"> {{ $discountAdditional }} </td>
               </tr>
     
@@ -593,7 +593,7 @@ tbody, td, tfoot, th, thead, tr {
                                 {{ 0 + ($seminarCount * 500) + ($promoflyerPages*50) + (($brandRecognition=="Yes")?50:0)  + 2000 }}
                             @elseif ($plan == "B" && $participants->count() <= 1  )
                                 {{
-                                ($participants->count()*50) + ($seminarCount * 500) + ($promoflyerPages*50)+ ( ($brandRecognition=="Yes")?50:0) + 1000   
+                                0 + ($seminarCount * 500) + ($promoflyerPages*50)+ ( ($brandRecognition=="Yes")?50:0) + 1000   
                                 }}
                             @elseif  ($plan == "B" && $participants->count() > 1  )  
                                 {{ 
